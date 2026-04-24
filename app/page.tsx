@@ -5,15 +5,38 @@ import { useState } from "react";
 export default function Home() {
   const [summary, setSummary] = useState("");
   const [inputText, setInputText] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async () => {
-    const res = await fetch("/api/summarize", {
-      method: "POST",
-      body: JSON.stringify({ text: inputText }),
-    });
+    if (!inputText.trim()) {
+      alert("Please enter some notes!");
+      return;
+    }
 
-    const data = await res.json();
-    setSummary(data.content);
+    try {
+      setLoading(true);
+      setSummary("");
+
+      const res = await fetch("/api/summarize", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // 🔥 important fix
+        },
+        body: JSON.stringify({ text: inputText }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong");
+      }
+
+      setSummary(data.summary); // ✅ FIXED (was data.content ❌)
+    } catch (error: any) {
+      setSummary("❌ Error: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,7 +51,7 @@ export default function Home() {
         position: "relative",
       }}
     >
-      {/* 🤖 ROBOT BEHIND */}
+      {/* 🤖 ROBOT */}
       <div
         style={{
           position: "absolute",
@@ -38,16 +61,10 @@ export default function Home() {
           zIndex: 1,
         }}
       >
-        <img
-          src="/robo.png"
-          alt="AI Bot"
-          style={{
-            width: "310px",
-          }}
-        />
+        <img src="/robo.png" alt="AI Bot" style={{ width: "310px" }} />
       </div>
 
-      {/* ✋ ROBOT HANDS OVER CARD */}
+      {/* ✋ HANDS */}
       <div
         style={{
           position: "absolute",
@@ -56,20 +73,13 @@ export default function Home() {
           transform: "translateY(-50%)",
           zIndex: 1,
           pointerEvents: "none",
-          clipPath: "inset(0 0 0 390px)", // ONLY show hands
-          
+          clipPath: "inset(0 0 0 390px)",
         }}
       >
-        <img
-          src="/robo.png"
-          alt="AI Hands"
-          style={{
-            width: "197px", // ✅ SAME SIZE (important)
-          }}
-        />
+        <img src="/robo.png" alt="AI Hands" style={{ width: "197px" }} />
       </div>
 
-      {/* 🧾 MAIN CARD */}
+      {/* 🧾 CARD */}
       <div
         style={{
           background: "#eee",
@@ -78,14 +88,12 @@ export default function Home() {
           width: "600px",
           textAlign: "center",
           zIndex: 2,
-          position: "relative",
         }}
       >
         <h1 style={{ color: "#7c3aed" }}>AI Notes Summarizer 🚀</h1>
 
         <div style={{ display: "flex", gap: 20, marginTop: 20 }}>
-          
-          {/* INPUT BOX */}
+          {/* INPUT */}
           <div
             style={{
               flex: 1,
@@ -98,7 +106,7 @@ export default function Home() {
 
             <div
               style={{
-                background: "#ffffff",              // ✅ WHITE BOX
+                background: "#fff",
                 borderRadius: 10,
                 padding: 10,
                 marginTop: 10,
@@ -115,15 +123,13 @@ export default function Home() {
                   borderRadius: 8,
                   padding: 8,
                   border: "1px solid #e5e7eb",
-                  color: "#424346",
-                  backgroundColor: "#ffffff",
                   outline: "none",
                 }}
               />
             </div>
           </div>
 
-          {/* OUTPUT BOX */}
+          {/* OUTPUT */}
           <div
             style={{
               flex: 1,
@@ -136,19 +142,17 @@ export default function Home() {
 
             <div
               style={{
-                background: "#ffffff",
+                background: "#fff",
                 borderRadius: 10,
                 padding: 12,
                 marginTop: 10,
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
                 minHeight: "80px",
-                color: "#111827",
-                fontSize: "14px",
-                lineHeight: "1.5",
                 whiteSpace: "pre-line",
               }}
             >
-              {summary || "Summary will appear here..."}
+              {loading
+                ? "⏳ Generating summary..."
+                : summary || "Summary will appear here..."}
             </div>
           </div>
         </div>
@@ -156,6 +160,7 @@ export default function Home() {
         {/* BUTTON */}
         <button
           onClick={handleClick}
+          disabled={loading}
           style={{
             marginTop: 20,
             padding: "10px 20px",
@@ -165,31 +170,12 @@ export default function Home() {
             color: "white",
             fontWeight: "bold",
             cursor: "pointer",
-            transition: "0.2s",
+            opacity: loading ? 0.6 : 1,
           }}
-          onMouseOver={(e) =>
-            (e.currentTarget.style.transform = "scale(1.05)")
-          }
-          onMouseOut={(e) =>
-            (e.currentTarget.style.transform = "scale(1)")
-          }
         >
-          ✨ Get Summary
+          {loading ? "Processing..." : "✨ Get Summary"}
         </button>
       </div>
-
-      {/* Placeholder + animation */}
-      <style jsx>{`
-        textarea::placeholder {
-          color: #6b7280;
-        }
-
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-          100% { transform: translateY(0px); }
-        }
-      `}</style>
     </div>
   );
 }
