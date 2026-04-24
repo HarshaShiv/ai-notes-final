@@ -1,25 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Notes Summarizer
 
-## Getting Started
+## Overview
+This project is a small end-to-end AI-enabled application that summarizes notes.
 
-First, run the development server:
+It demonstrates a complete data pipeline from ingestion to UI using a simple and clear architecture.
 
+---
+
+## Features
+- Ingest raw notes from a text file
+- ETL processing (clean and transform data)
+- Store processed data in JSON format
+- API layer to serve data
+- AI summarization (simulated)
+- User interface to display results
+
+---
+
+## Architecture
+Data flow:
+
+Raw Notes (TXT) → ETL Script → Processed JSON → API → UI
+
+User → UI → API → JSON storage → AI layer → Output
+
+---
+
+## ETL Process
+The ETL script:
+- Reads raw text from a file
+- Cleans and formats the data
+- Saves it as structured JSON
+
+---
+
+## Tech Stack
+- Next.js (Frontend + API)
+- Node.js
+- Vercel (Deployment)
+- GitHub (Version control)
+
+---
+
+## How to Run Locally
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
