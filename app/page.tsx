@@ -20,7 +20,7 @@ export default function Home() {
       const res = await fetch("/api/summarize", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json", // 🔥 important fix
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ text: inputText }),
       });
@@ -31,7 +31,7 @@ export default function Home() {
         throw new Error(data.error || "Something went wrong");
       }
 
-      setSummary(data.summary); // ✅ FIXED (was data.content ❌)
+      setSummary(data.summary); // ✅ matches API
     } catch (error: any) {
       setSummary("❌ Error: " + error.message);
     } finally {
