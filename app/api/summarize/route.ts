@@ -1,17 +1,28 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 
 export async function GET() {
-  const filePath = path.join(process.cwd(), "data/processed/notes.json");
-  const data = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  return NextResponse.json({
+    content: "• Default summary from notes file",
+  });
+}
 
-  // Fake AI summary
-  const summary = `
-• AI is transforming industries  
-• Machine learning automates decisions  
-• Deep learning is a subset of ML  
-`;
+export async function POST(req: Request) {
+  const body = await req.json();
+  const text = body.text || "";
 
-  return NextResponse.json({ content: summary });
+  // Split text into sentences (handles ., !, ?)
+  const sentences = text
+    .split(/[.!?]/)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+
+  // Take first 3 meaningful sentences
+  const selected = sentences.slice(0, 3);
+
+  // Convert to bullet points
+  const summary = selected.map(s => "• " + s).join("\n");
+
+  return NextResponse.json({
+    content: summary || "• No meaningful content provided",
+  });
 }
