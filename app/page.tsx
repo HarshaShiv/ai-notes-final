@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Home() {
   const [summary, setSummary] = useState("");
@@ -31,7 +32,7 @@ export default function Home() {
         throw new Error(data.error || "Something went wrong");
       }
 
-      setSummary(data.summary); // ✅ matches API
+      setSummary(data.summary);
     } catch (error: any) {
       setSummary("❌ Error: " + error.message);
     } finally {
@@ -51,94 +52,76 @@ export default function Home() {
         position: "relative",
       }}
     >
-      {/* 🤖 ROBOT */}
+      {/* 🤖 ROBOT (clean placement) */}
       <div
         style={{
           position: "absolute",
-          right: "300px",
-          top: "50%",
-          transform: "translateY(-50%)",
+          right: "80px",
+          bottom: "40px",
           zIndex: 1,
         }}
       >
-        <img src="/robo.png" alt="AI Bot" style={{ width: "310px" }} />
-      </div>
-
-      {/* ✋ HANDS */}
-      <div
-        style={{
-          position: "absolute",
-          right: "220px",
-          top: "50%",
-          transform: "translateY(-50%)",
-          zIndex: 1,
-          pointerEvents: "none",
-          clipPath: "inset(0 0 0 390px)",
-        }}
-      >
-        <img src="/robo.png" alt="AI Hands" style={{ width: "197px" }} />
+        <Image src="/robo.png" alt="AI Bot" width={220} height={220} />
       </div>
 
       {/* 🧾 CARD */}
       <div
         style={{
-          background: "#eee",
+          background: "#f3f4f6",
           padding: 30,
           borderRadius: 20,
-          width: "600px",
+          width: "650px",
           textAlign: "center",
           zIndex: 2,
+          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         }}
       >
-        <h1 style={{ color: "#7c3aed" }}>AI Notes Summarizer 🚀</h1>
+        <h1 style={{ color: "#7c3aed", fontSize: "28px" }}>
+          AI Notes Summarizer 🚀
+        </h1>
+        <p style={{ color: "#6b7280" }}>
+          Get instant summaries using AI ✨
+        </p>
 
         <div style={{ display: "flex", gap: 20, marginTop: 20 }}>
           {/* INPUT */}
           <div
             style={{
               flex: 1,
-              background: "#ddd",
+              background: "#e5e7eb",
               padding: 15,
               borderRadius: 12,
             }}
           >
             <h3 style={{ color: "#4338ca" }}>Your Notes</h3>
 
-            <div
+            <textarea
+              placeholder="Type or paste your notes here..."
+              value={inputText}
+              onChange={(e) => setInputText(e.target.value)}
               style={{
-                background: "#fff",
+                width: "100%",
+                height: 120,
+                marginTop: 10,
                 borderRadius: 10,
                 padding: 10,
-                marginTop: 10,
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+                border: "1px solid #d1d5db",
+                outline: "none",
+                resize: "none",
               }}
-            >
-              <textarea
-                placeholder="Enter your notes here..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                style={{
-                  width: "100%",
-                  height: 80,
-                  borderRadius: 8,
-                  padding: 8,
-                  border: "1px solid #e5e7eb",
-                  outline: "none",
-                }}
-              />
-            </div>
+            />
           </div>
 
           {/* OUTPUT */}
           <div
             style={{
               flex: 1,
-              background: "#ddd",
+              background: "#d1fae5",
               padding: 15,
               borderRadius: 12,
             }}
           >
-            <h3 style={{ color: "#4338ca" }}>Output</h3>
+            <h3 style={{ color: "#065f46" }}>Output</h3>
 
             <div
               style={{
@@ -146,7 +129,7 @@ export default function Home() {
                 borderRadius: 10,
                 padding: 12,
                 marginTop: 10,
-                minHeight: "80px",
+                minHeight: "120px",
                 whiteSpace: "pre-line",
               }}
             >
@@ -163,13 +146,14 @@ export default function Home() {
           disabled={loading}
           style={{
             marginTop: 20,
-            padding: "10px 20px",
-            borderRadius: 20,
+            padding: "12px 24px",
+            borderRadius: 25,
             border: "none",
             background: "linear-gradient(90deg, #6366f1, #ec4899)",
             color: "white",
             fontWeight: "bold",
             cursor: "pointer",
+            fontSize: "16px",
             opacity: loading ? 0.6 : 1,
           }}
         >

@@ -1,3 +1,13 @@
-{
-  "content": "AI is transforming industries. Machine learning helps automate decisions.\r Deep learning is a subset of ML."
-}
+<textarea
+  value={inputText}
+  onChange={(e) => setInputText(e.target.value)}
+  placeholder="Type or paste your notes here..."
+  rows={6}
+  maxLength={2000}
+  className="w-full p-4 rounded-xl border border-gray-300 text-black 
+             focus:outline-none focus:ring-2 focus:ring-purple-500 
+             shadow-sm resize-none transition duration-200"
+/>
+<p className="text-sm text-gray-500 text-right mt-1">
+  {inputText.length}/2000 characters
+</p>

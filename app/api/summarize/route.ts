@@ -8,27 +8,43 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const text = body.text || "";
+    const body: { text?: string } = await req.json();
+    const text: string = body.text?.trim() || "";
+
+    if (!text) {
+      return NextResponse.json({
+        summary: "• Please enter some text to summarize",
+      });
+    }
 
     // Split text into sentences
-    const sentences = text
-      .split(/[.!?]/)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+    const sentences: string[] = text
+      .split(/[.!?]+/)
+      .map((s: string) => s.trim())
+      .filter((s: string) => s.length > 20); // ignore very short sentences
 
-    // Take first 3 sentences
-    const selected = sentences.slice(0, 3);
+    // If not enough sentences, fallback
+    if (sentences.length === 0) {
+      return NextResponse.json({
+        summary: "• Not enough meaningful content to summarize",
+      });
+    }
+
+    // Take first 3 meaningful sentences
+    const selected: string[] = sentences.slice(0, 3);
 
     // Convert to bullet points
-    const summary = selected.map((s) => "• " + s).join("\n");
+    const summary: string = selected
+      .map((s: string) => `• ${s}`)
+      .join("\n");
 
-    return NextResponse.json({
-      summary: summary || "• No meaningful content provided",
-    });
+    return NextResponse.json({ summary });
+
   } catch (error) {
+    console.error("API Error:", error);
+
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong while processing text" },
       { status: 500 }
     );
   }
